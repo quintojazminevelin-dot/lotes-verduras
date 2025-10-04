@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Seguimiento Lote</title>
+  <style>
+    body { font-family: Arial; display:flex; justify-content:center; align-items:center; height:100vh; }
+    .info { background:#fff; padding:20px; border-radius:10px; text-align:center; box-shadow:0 2px 10px rgba(0,0,0,0.1);}
+    .estado-🟢 { color: #2ecc71; font-weight:bold; }
+    .estado-🟡 { color: #f1c40f; font-weight:bold; }
+    .estado-🔴 { color: #e74c3c; font-weight:bold; }
+  </style>
+</head>
+<body>
+<div class="info" id="info">Cargando...</div>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+
+  if (!id) {
+    document.getElementById('info').innerHTML = "No se proporcionó ID de lote.";
+  } else {
+    fetch(`https://script.google.com/macros/s/AKfycbwr8Eqj1w8sKjFZZV4C3SRdpra4ZxnSsMTqtiFBjmoHfP8tNQc7o9UuJZS1PYvbskGLig/exec?id=${id}`)
+      .then(res => res.json())
+      .then(lote => {
+        document.getElementById('info').innerHTML = `
+          <p><strong>ID:</strong> ${lote.ID}</p>
+          <p><strong>Producto:</strong> ${lote.Producto}</p>
+          <p><strong>Tiempo transcurrido:</strong> ${lote.HorasTranscurridas} h</p>
+          <p><strong>Estado:</strong> <span class="estado-${lote.Estado.charAt(0)}">${lote.Estado}</span></p>
+        `;
+      })
+      .catch(err => {
+        document.getElementById('info').innerHTML = "Error al cargar información.";
+        console.error(err);
+      });
+  }
+</script>
+</body>
+</html>
